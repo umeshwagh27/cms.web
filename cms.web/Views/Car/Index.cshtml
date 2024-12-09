@@ -1,0 +1,132 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <button onclick="openCarModal">Add Car</button>
+    </div>
+    <div class="col-md-12">
+        <table id="carTable">
+            <thead>
+                <tr role="row">
+                    <th>Image</th>
+                    <th>Brand</th>
+                    <th>Model Code</th>
+                    <th>Model Name</th>
+                    <th>Class</th>
+                    <th>Feature</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="carModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Car</h5>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="brand" class="form-label required">Brand</label>
+                            <select id="brand" onchange="validationClear(this)" class="form-select form-control">
+                                <option selected value="">Select Brand</option>
+                                <option value="Audi">Audi</option>
+                                <option value="Jaguar">Jaguar</option>
+                                <option value="Land rover">Land rover</option>
+                                <option value="Renault">Renault</option>
+                            </select>
+                            <span id="validationbrand" class="text-danger"></span>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="date" class="form-label required">Date of Manufacturing</label>
+                            <input type="text" class="form-control" id="date" />
+                            <span id="validationDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="modelCode" class="form-label required">Model Code</label>
+                            <input type="text" id="modelCode" oninput="validationClear(this)" class="form-control" maxlength="10" placeholder="Enter model code" />
+                            <span id="validationmodelCode" class="text-danger"></span>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="modelName" class="form-label required">Model Name</label>
+                            <input type="text" class="form-control" oninput="validationClear(this)" maxlength="100" id="modelName" placeholder="Enter model name" />
+                            <span id="validationmodelName" class="text-danger"></span>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="brand" class="form-label required">Brand</label>
+                            <select id="brand" onchange="validationClear(this)" class="form-select form-control">
+                                <option selected value="">Select Brand</option>
+                                <option value="Audi">Audi</option>
+                                <option value="Jaguar">Jaguar</option>
+                                <option value="Land rover">Land rover</option>
+                                <option value="Renault">Renault</option>
+                            </select>
+                            <span id="validationbrand" class="text-danger"></span>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="description" class="form-label required">Description</label>
+                            <textarea placeholder="Please enter description" id="description"></textarea>
+                            <span id="validationdescription" class="text-danger"></span>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="feature" class="form-label required">Feature</label>
+                            <textarea placeholder="Please enter feature" id="feature"></textarea>
+                            <span id="validationfeature" class="text-danger"></span>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="price" class="form-label required">Price</label>
+                            <input type="text" class="form-control" oninput="validationClear(this)" id="price" placeholder="Enter price" />
+                            <span id="validationprice" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 text-center">
+                    <button type="button" id="save" class="btn btn-primary">
+                        Save
+                    </button>
+                    <button type="button" id="cancel" class="btn btn-danger">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {   
+    <script>
+        $(document).ready(function () {
+            let table = new DataTable('#myTable');
+          
+
+            $('#carModal').on('shown.bs.modal', function () {
+                ClassicEditor
+                    .create(document.querySelector('#description'))
+                    .catch(error => {
+                        console.error(error);
+                    });
+                    $('#date').datepicker({
+                        container: '#carModal'
+                    });
+            });
+            
+        });
+    
+        function openCarModal(){
+           $('#carModal').modal('show');
+        }
+
+        $("#save").click(function (e) {
+            $('#carModal').modal('hide');
+        });
+        $("#cancel").click(function (e) {
+            $('#carModal').modal('hide');
+        });
+
+    </script>
+}
+
+
