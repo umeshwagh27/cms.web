@@ -5,35 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - cms.web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+@*     <link type="text/css" rel="stylesheet" href="~/css/jquery-ui.min.css" /> *@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/cms.web.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.0.0/ckeditor5.css" />
-    <link rel="stylesheet" href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" />    
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link href="~/css/toastr.min.css" rel="stylesheet" />
+    <style>
+        /* Loader styles */
+        #loader {
+            position: fixed;
+            z-index: 9999;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            display: none; /* Initially hidden */
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Disable interaction and scrolling while the loader is active */
+        .no-interaction {
+            filter: blur(2px);
+            pointer-events: none; /* Disable all interactions */
+            overflow: hidden; /* Disable scrolling */
+        }
+
+    </style>
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">cms.web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+                <a class="navbar-brand" asp-area="" asp-controller="Car" asp-action="Index">cms.web</a>             
             </div>
         </nav>
     </header>
+    <div id="loader">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
 	<div class="container">		
         <main role="main" class="pb-3">
             @RenderBody()
@@ -45,13 +65,35 @@
             &copy; 2024 - cms.web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <script>
+         // Function to show the loader and disable interactions
+         function showLoader() {
+             $('#loader').show();
+             document.querySelector('.container').classList.add('no-interaction');
+         }
+
+         // Function to hide the loader and enable interactions
+         function hideLoader() {
+             $('#loader').hide();
+             document.querySelector('.container').classList.remove('no-interaction');
+         }
+
+        // document.querySelector('.container').classList.add('no-interaction');
+         // When the page has fully loaded, hide the loader and unblock interactions
+         window.addEventListener('load', function () {
+             hideLoader(); // Hide loader and enable interactions when the page is fully loaded
+         });
+    </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+@*     <script src="~/js/jquery-ui.min.js"></script> *@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/toastr.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/moment.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script> 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

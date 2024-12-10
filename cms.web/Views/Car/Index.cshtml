@@ -1,6 +1,82 @@
-﻿<div class="row">
+﻿@section Styles
+{
+    <style type="text/css">
+        #carTable th,
+        #carTable td {
+            min-width: 100px;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .thumbnail {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Modal gallery styles */
+        .gallery-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-img {
+            max-width: 100%;
+            max-height: 80vh;
+        }
+
+        .image-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .image-preview {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .image-preview-wrapper {
+            position: relative;
+        }
+
+        /* Optional: style for delete icon */
+        .delete-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(255, 0, 0, 0.7);
+            color: white;
+            font-size: 18px;
+            border-radius: 50%;
+            padding: 2px 5px;
+            cursor: pointer;
+        }
+    </style>
+}
+<div class="row">
     <div class="col-md-12">
-        <button onclick="openCarModal">Add Car</button>
+        <button onclick="openCarModal()">Add Car</button>
+        <button onclick="openCarModalClass()">Add Car Class</button>
     </div>
     <div class="col-md-12">
         <table id="carTable">
@@ -14,6 +90,7 @@
                     <th>Feature</th>
                     <th>Description</th>
                     <th>Price</th>
+                    <th>Date</th>
                 </tr>
             </thead>
         </table>
@@ -38,48 +115,22 @@
                                 <option value="Land rover">Land rover</option>
                                 <option value="Renault">Renault</option>
                             </select>
-                            <span id="validationbrand" class="text-danger"></span>
                         </div>
                         <div class="col-6 mb-3">
                             <label for="date" class="form-label required">Date of Manufacturing</label>
                             <input type="text" class="form-control" id="date" />
-                            <span id="validationDate" class="text-danger"></span>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="modelCode" class="form-label required">Model Code</label>
                             <input type="text" id="modelCode" oninput="validationClear(this)" class="form-control" maxlength="10" placeholder="Enter model code" />
-                            <span id="validationmodelCode" class="text-danger"></span>
                         </div>
                         <div class="col-6 mb-3">
                             <label for="modelName" class="form-label required">Model Name</label>
                             <input type="text" class="form-control" oninput="validationClear(this)" maxlength="100" id="modelName" placeholder="Enter model name" />
-                            <span id="validationmodelName" class="text-danger"></span>
                         </div>
-                        <div class="col-6 mb-3">
-                            <label for="brand" class="form-label required">Brand</label>
-                            <select id="brand" onchange="validationClear(this)" class="form-select form-control">
-                                <option selected value="">Select Brand</option>
-                                <option value="Audi">Audi</option>
-                                <option value="Jaguar">Jaguar</option>
-                                <option value="Land rover">Land rover</option>
-                                <option value="Renault">Renault</option>
-                            </select>
-                            <span id="validationbrand" class="text-danger"></span>
-                        </div>
-                        <div class="col-6 mb-3">
+                        <div class="col-12 mb-3">
                             <label for="description" class="form-label required">Description</label>
                             <textarea placeholder="Please enter description" id="description"></textarea>
-                            <span id="validationdescription" class="text-danger"></span>
-                        </div>
-                        <div class="col-6 mb-3">
-                            <label for="feature" class="form-label required">Feature</label>
-                            <textarea placeholder="Please enter feature" id="feature"></textarea>
-                            <span id="validationfeature" class="text-danger"></span>
-                        </div>
-                        <div class="col-6 mb-3">
-                            <label for="price" class="form-label required">Price</label>
-                            <input type="text" class="form-control" oninput="validationClear(this)" id="price" placeholder="Enter price" />
-                            <span id="validationprice" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -96,36 +147,457 @@
     </div>
 </div>
 
-@section scripts {   
+<div class="modal fade" id="carModelClass" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Car Model</h5>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="carBrand" class="form-label required">Brand</label>
+                            <select id="carBrand" onchange="validationClear(this)" class="form-select form-control">
+                                <option selected value="">Select Brand</option>
+                                <option value="Audi">Audi</option>
+                                <option value="Jaguar">Jaguar</option>
+                                <option value="Land rover">Land rover</option>
+                                <option value="Renault">Renault</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="carClass" class="form-label required">Class</label>
+                            <select id="carClass" onchange="validationClear(this)" class="form-select form-control">
+                                <option selected value="">Select class</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label for="feature" class="form-label required">Feature</label>
+                            <textarea placeholder="Please enter feature" id="feature"></textarea>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="price" class="form-label required">Price</label>
+                            <input type="text" class="form-control" oninput="validationClear(this)" id="price" placeholder="Enter price" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="img" class="form-label">Car Image</label>
+                            <input type="file" id="imageUpload" accept="image/*" multiple>
+                        </div>
+                        <div class="col-12">
+                            <div class="image-preview-container" id="imagePreviewContainer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 text-center">
+                    <button type="button" id="saveClass" class="btn btn-primary">
+                        Save
+                    </button>
+                    <button type="button" id="cancelClass" class="btn btn-danger">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Data table thumbnail *@
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Image Gallery</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <!-- Gallery of images -->
+                <div id="galleryContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
     <script>
+        let editorInstanceDesc;
+        let editorInstanceFeature;
         $(document).ready(function () {
-            let table = new DataTable('#myTable');
-          
+            ViewDashBoard();
 
             $('#carModal').on('shown.bs.modal', function () {
                 ClassicEditor
                     .create(document.querySelector('#description'))
+                    .then(editor => {
+                        editorInstanceDesc = editor; // Save the instance for later use
+                    })
                     .catch(error => {
                         console.error(error);
                     });
+
                     $('#date').datepicker({
-                        container: '#carModal'
+                        container: '#carModal',
+                        dateFormat: "dd-mm-yy",
                     });
             });
-            
+
+            $('#carModelClass').on('shown.bs.modal', function () {
+                ClassicEditor
+                    .create(document.querySelector('#feature'))
+                    .then(editor => {
+                        editorInstanceFeature = editor; // Save the instance for later use
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
+
+            $('#imageUpload').on('change', function(event) {
+                var previewContainer = $('#imagePreviewContainer');
+                previewContainer.empty(); // Clear previous previews
+
+                // Loop through each selected file
+                $.each(event.target.files, function(index, file) {
+                    if (file.size > 5 * 1024 * 1024) { // Check if file size is larger than 5MB
+                        alert("File is too large. Please select an image under 5MB.");
+                    } 
+                    else 
+                    {
+                        var reader = new FileReader();
+
+                        reader.onload = function(e) {
+                            // Create a div wrapper for each image preview
+                            var previewWrapper = $('<div>').addClass('image-preview-wrapper');
+
+                            // Create image preview element
+                            var img = $('<img>').attr('src', e.target.result).addClass('image-preview');
+
+                            // Add a delete icon for the image
+                            var deleteIcon = $('<span>').addClass('delete-icon').text('×').on('click', function() {
+                                previewWrapper.remove(); // Remove image preview when delete icon is clicked
+                            });
+
+                            // Append the image and delete icon to the preview wrapper
+                            previewWrapper.append(img).append(deleteIcon);
+
+                            // Append the preview wrapper to the container
+                            previewContainer.append(previewWrapper);
+                        };
+
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+            $('#brand').change(function () {
+                var brand = $(this).val();
+                if (brand) {
+                    $.ajax({
+                        url: '/Car/GetCarDetailByBradName',
+                        type: 'GET',
+                        data: { brandName: brand },
+                        success: function (data) {
+                            if (data != undefined){
+                                $('#modelCode').val(data.modelCode);
+                                $('#modelName').val(data.modelName);
+                                if(data.description!= null){
+                                    editorInstanceDesc.setData(data.description);
+                                }else{
+                                    editorInstanceDesc.setData('');
+                                }
+                                $('#date').val(data.dateofManufacturingString);
+                            }
+                            else{
+                                $('#modelCode').empty();
+                                $('#modelName').empty();
+                                $('#description').empty();
+                                $('#date').empty();
+                            }
+                        }
+                    });
+                }
+                else {
+                    $('#modelCode').empty();
+                    $('#modelName').empty();
+                    $('#description').empty();
+                    $('#date').empty();
+                }
+            });
+            $('#carClass').change(function () {
+               var carBrand = $('#carBrand').val();
+               var carClass = $(this).val();
+               if (carClass) {
+                   $.ajax({
+                       url: '/Car/GetCarDetailByBrandClass',
+                       type: 'GET',
+                       data: { brandName: carBrand,className: carClass},
+                       success: function (data) {
+                           if (data != undefined)
+                           {
+                               $('#price').val(data.price);
+                              
+                               if(data.features!=null)
+                               {
+                                    editorInstanceFeature.setData(data.features);
+                               }
+                               else
+                               {
+                                     editorInstanceFeature.setData('');
+                               }
+                               if (data.images && data.images.length > 0)
+                               {
+                                    var previewContainer = $('#imagePreviewContainer');
+                                    previewContainer.empty(); // Clear any previous previews
+
+                                    // Loop through the list of images from the backend
+                                    $.each(data.images, function(index, imgData) {
+                                        // Assuming imgData is a URL or base64 string
+                                        var previewWrapper = $('<div>').addClass('image-preview-wrapper');
+                                        var img = $('<img>').attr('src', imgData).addClass('image-preview');
+                                        var deleteIcon = $('<span>').addClass('delete-icon').text('×').on('click', function() {
+                                            previewWrapper.remove(); // Remove the image preview on click
+                                        });
+                                        previewWrapper.append(img).append(deleteIcon);
+                                        previewContainer.append(previewWrapper);
+                                    });
+                                }
+                               }
+                               else
+                               {
+                                   $('#price').empty();
+                                   $('#feature').empty();
+                               }
+                       }
+                   });
+               }
+               else {
+                   $('#price').empty();
+                   $('#feature').empty();
+               }
+           });
         });
-    
+
+        function ViewDashBoard(){
+             if ($.fn.DataTable.isDataTable("#carTable")) {
+                $("#carTable").dataTable().fnDestroy();
+            }
+            var table = $("#carTable")
+                .DataTable({
+                    "lengthMenu": [[5, 10, 50, -1], [5, 10, 50, "All"]],
+                    "responsive": true,
+                    "bProcessing": true,
+                    "bServerSide": true,
+                    "bSearchable": true,
+                    "searching": true,
+                    "autoWidth": true,
+                    "scrollX": true,
+                    "sAjaxSource": "/Car/GetCarDetailList",
+                    "initComplete": function (settings, json) { },
+                    "rowCallback": function (row, data, index) { },
+                    "order": [[8, "desc"]],
+                    "language": {
+                        "info": "Showing _START_ to _END_ of _TOTAL_ Car",
+                        "sInfoEmpty": "Showing 0 to 0 of 0 Car"
+                    },
+                    "columns": [
+                        {
+                            "data": 'imageUrl',
+                            "searchable": false,
+                            "orderable": false,
+                            "render": function (data, type, row) {
+                                if (data && data.length > 0)
+                                {
+                                    return `<img src="${data[0]}" style="width:100%" class="thumbnail" data-images='${JSON.stringify(data)}' alt="Thumbnail">`;
+                                }
+                                else {
+                                    return `<img src="../../lib/img/design.png" style="width:100%" class="thumbnail" alt="Thumbnail">`;
+                                }
+                            }
+                        },
+                        {
+                            "data": "brand",
+                            "searchable": false,
+                            "orderable": false,
+                        },
+                        {
+                            "data": "modelCode",
+                            "searchable": true,
+                            "orderable": false,
+                        },
+                        {
+                            "data": "modelName",
+                            "searchable": true,
+                            "orderable": false
+                        },
+                        {
+                            "data": "className",
+                            "searchable": false,
+                            "orderable": false
+                        },
+                        {
+                            "data": "features",
+                            "searchable": false,
+                            "orderable": false
+                        },
+                        {
+                            "data": "description",
+                            "searchable": false,
+                            "orderable": false
+                        },
+                        {
+                            "data": "price",
+                            "searchable": false,
+                            "orderable": false
+                        },
+                        {
+                            "data": "dateofManufacturing",
+                            "searchable": false,
+                            "orderable": true,
+                            "render": function (data, type, row) {
+                                return moment(data).format("DD-MM-YYYY");
+                            }
+                        },
+                    ]
+
+                });
+        }
+
+        $(document).on('click', '.thumbnail', function () {
+            var images =$(this).data('images');
+            var galleryContainer = $('#galleryContainer');         
+            galleryContainer.empty();
+            if (images && images.length > 0) {
+                images.forEach(function (imgUrl) {
+                    galleryContainer.append(`<img src="${imgUrl}" class="gallery-img" alt="Gallery Image">`);
+                });
+            }
+            else
+            {
+                galleryContainer.append('<p>No additional images available.</p>');
+            }
+            $('#imageModal').modal('show');
+        });
+
         function openCarModal(){
            $('#carModal').modal('show');
         }
+        function openCarModalClass(){
+           $('#carModelClass').modal('show');
+        }
 
         $("#save").click(function (e) {
-            $('#carModal').modal('hide');
+            showLoader();
+            var formData = new FormData();
+            formData.append('brand', $('#brand').val());
+            formData.append('modelCode', $('#modelCode').val());
+            formData.append('modelName',$('#modelName').val());
+            formData.append('description', editorInstanceDesc.getData());
+            formData.append('DateofManufacturingString', $('#date').val());
+         
+            $.ajax({
+                url: '/Car/AddEditCar',
+                type: 'POST',
+                contentType: false,
+                processData: false,              
+                data: formData, 
+                success: function(r) {
+                    if (r.isSuccess) {
+                        toastr.success(r.message);
+                        $('#cancel').click();
+                        $('#carTable').DataTable().ajax.reload();
+
+                    }
+                    else {
+                        toastr.error(r.message);
+                         $('#cancel').click();
+                        $('#carTable').DataTable().ajax.reload();
+
+                    }
+                    hideLoader();
+                },
+                error: function(xhr, status, error) {
+                    hideLoader();
+                    $('#cancel').click();
+                    toaster.error('There was an error saving the car details.');
+                }
+            });
         });
+
         $("#cancel").click(function (e) {
+            destroyEditor();
+            $('#brand').val('');
+            $('#modelCode').val('');
+            $('#modelName').val('');
+            $('#description').val('');
+            $('#date').val('');
             $('#carModal').modal('hide');
         });
 
+        $("#saveClass").click(function (e) {
+            showLoader();
+            var formData = new FormData();
+            formData.append('brand', $('#carBrand').val());
+            formData.append('className', $('#carClass').val());
+            formData.append('features', editorInstanceFeature.getData());
+            formData.append('price', $('#price').val());
+
+            $.each($('#imageUpload')[0].files, function(i, file) {
+                formData.append('images', file);
+            });
+
+  
+            $.ajax({
+                url: '/Car/AddEditCarModel',
+                type: 'POST',
+                data: formData, 
+                contentType: false, 
+                processData: false,  
+                success: function(r) {
+                    if (r.isSuccess) {
+                        toastr.success(r.message);
+                        $('#cancelClass').click();
+                        $('#carTable').DataTable().ajax.reload();
+
+                    }
+                    else {
+                        toastr.error(r.message);
+                         $('#cancelClass').click();
+                        $('#carTable').DataTable().ajax.reload();
+
+                    }
+                    hideLoader();
+                },
+                error: function(xhr, status, error) {
+                    hideLoader();
+                    $('#cancel').click();
+                    toaster.error('There was an error saving the car details.');
+                }
+            });
+         
+        });
+
+        $("#cancelClass").click(function (e) {
+            destroyEditor();
+            $('#imagePreviewContainer').empty();
+            $('#carBrand').val('');
+            $('#carClass').val('');
+            $('#price').val('');
+            $('#feature').val('');
+            $('#carModelClass').modal('hide');
+        });
+
+        function destroyEditor(){
+            if (editorInstanceFeature) {
+                editorInstanceFeature.destroy();
+                editorInstanceFeature = null; 
+            }
+            if (editorInstanceDesc) {
+                editorInstanceDesc.destroy();
+                editorInstanceDesc = null;
+            }
+        }
     </script>
 }
 
